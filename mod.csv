@@ -517,6 +517,8 @@ rawfile,maps\zombie_pentagon.gsc
 // Custom / Overriden zombie_cosmodrome Assets
 //============================================================================================
 rawfile,clientscripts\zombie_cosmodrome.csc
+
+rawfile,maps\zombie_cosmodrome_lander.gsc
 rawfile,maps\zombie_cosmodrome.gsc
 
 //============================================================================================
