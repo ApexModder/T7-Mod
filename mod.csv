@@ -518,6 +518,7 @@ rawfile,maps\zombie_pentagon.gsc
 //============================================================================================
 rawfile,clientscripts\zombie_cosmodrome.csc
 
+rawfile,maps\zombie_cosmodrome_eggs.gsc
 rawfile,maps\zombie_cosmodrome_lander.gsc
 rawfile,maps\zombie_cosmodrome.gsc
 
