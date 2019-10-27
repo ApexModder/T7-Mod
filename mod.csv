@@ -510,6 +510,7 @@ rawfile,clientscripts\zombie_pentagon.csc
 
 rawfile,maps\zombie_pentagon_magic_box.gsc
 rawfile,maps\zombie_pentagon_teleporter.gsc
+rawfile,maps\zombie_pentagon_traps.gsc
 rawfile,maps\zombie_pentagon.gsc
 
 //============================================================================================
