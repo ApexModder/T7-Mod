@@ -65,9 +65,18 @@ pack_hideaway_init()
 	// level.punch_machine = GetEnt( level.punch_trigger.target, "targetname" );
 	level.punch_machine = level.punch_trigger.machine;
 	// level.punch_sign = GetEnt( level.punch_machine.target, "targetname" );
-	level.punch_sign = level.punch_trigger.flag;
-	level.punch_sign LinkTo( level.punch_machine );
-	level.punch_sign
+	// level.punch_sign = level.punch_trigger.flag;
+	// level.punch_sign LinkTo( level.punch_machine );
+
+	// flag is removed on "FIVE"
+	// due to the machine spinning / hiding
+	// the flag is positioned all weird
+	if(isdefined(level.punch_trigger.flag))
+	{
+		level.punch_trigger.flag SetModel("tag_origin");
+		level.punch_trigger.flag Hide();
+		level.punch_trigger.flag NotSolid();
+	}
 
 	level.punch_trigger thread fake_linkto(hideaway);
 
@@ -108,7 +117,7 @@ pack_hideaway_init()
 		hideaway StopLoopSound( 1 );
 	    hideaway PlaySound( "evt_packapunch_revolve_end" );
 
-		level.punch_sign Unlink();
+		// level.punch_sign Unlink();
 
 		// time given for everyone to pack if they want.
 		//level waittill("defcon_reset");
@@ -121,7 +130,7 @@ pack_hideaway_init()
 				wait(0.1);
 			}
 		}
-		level.punch_sign LinkTo( level.punch_machine );
+		// level.punch_sign LinkTo( level.punch_machine );
 		// level.punch_trigger trigger_off();
 		level.punch_trigger.trigger_hidden = true;
 		level.punch_trigger maps\apex\_zm_packapunch::set_state_hidden();
