@@ -23,6 +23,7 @@ main()
 	level.random_pandora_box_start = false;
 
 	level thread maps\_callbacksetup::SetupCallbacks();
+	setup_t7_mod();
 
 	level.quad_move_speed = 35;
 	//level.quad_traverse_death_fx = ::quad_traverse_death_fx;
@@ -66,7 +67,6 @@ main()
 	level maps\zombie_pentagon_traps::init_traps();
 	level thread maps\_zombiemode_auto_turret::init();
 	level thread maps\zombie_pentagon_elevators::init();
-	level thread electric_switch();
 	level thread enable_zone_elevators_init();
 	level thread maps\zombie_pentagon_teleporter::pentagon_packapunch_init();
 	level thread maps\zombie_pentagon_teleporter::pack_door_init();
@@ -75,7 +75,6 @@ main()
 	level thread vision_set_init();
 	level thread laststand_bleedout_init();
 	level thread lab_shutters_init();
-	level thread pentagon_brush_lights_init();
 	level thread zombie_warroom_barricade_fix();
 	level thread barricade_glitch_fix();
 
@@ -188,81 +187,6 @@ enable_zone_elevators_init()
 }
 
 //*****************************************************************************
-// ELECTRIC SWITCH
-// once this is used, it activates other objects in the map
-// and makes them available to use
-//*****************************************************************************
-electric_switch()
-{
-	trig = getent("use_elec_switch","targetname");
-	trig sethintstring(&"ZOMBIE_ELECTRIC_SWITCH");
-	trig setcursorhint( "HINT_NOICON" );
-
-	level thread wait_for_power();
-
-	trig waittill("trigger",user);
-
-	trig delete();
-	flag_set( "power_on" );
-	Objective_State(8,"done");
-}
-
-
-//
-//	Wait for the power_on flag to be set.  This is needed to work in conjunction with
-//		the devgui cheat.
-//
-wait_for_power()
-{
-	master_switch = getent("elec_switch","targetname");
-	master_switch notsolid();
-
-	flag_wait( "power_on" );
-
-	exploder(3500);
-
-	//light_exploders.
-	stop_exploder(2000);
-	exploder(2001);
-
-	level thread regular_portal_fx_on();
-	level thread maps\zombie_pentagon::change_pentagon_vision();
-
-	master_switch rotateroll(-90,.3);
-	master_switch playsound("zmb_switch_flip");
-
-	// Set Perk Machine Notifys
-	level notify("revive_on");
-	level notify("juggernog_on");
-	level notify("sleight_on");
-	level notify("doubletap_on");
-	level notify("Pack_A_Punch_on" );
-
-	// DSL - putting these together into 1 single client notify - redispatching them all as level notifies on the client.
-
-/*	clientnotify( "power_on" );
-
-	clientnotify("revive_on");
-	clientnotify("middle_door_open");
-	clientnotify("fast_reload_on");
-	clientnotify("doubletap_on");
-	clientnotify("jugger_on");	*/
-
-	clientnotify("ZPO");	 // Zombie Power On.
-
-	//get the teleporter ready
-	maps\zombie_pentagon_teleporter::teleporter_init();
-
-	master_switch waittill("rotatedone");
-	playfx(level._effect["switch_sparks"] ,getstruct("elec_switch_fx","targetname").origin);
-
-	//Sound - Shawn J  - adding temp sound to looping sparks & turning on power sources
-	master_switch playsound("zmb_turn_on");
-
-	level thread maps\zombie_pentagon_amb::play_pentagon_announcer_vox( "zmb_vox_pentann_poweron" );
-}
-
-//*****************************************************************************
 //AUDIO
 //*****************************************************************************
 
@@ -325,11 +249,13 @@ vision_set_init()
 
 	exploder(2000);
 
-	players = getplayers();
-	for ( i = 0; i < players.size; i++ )
-	{
-		players[i] VisionSetNaked("zombie_pentagon", 0.5);
-	}
+	// Use csc vision system
+	// players = getplayers();
+	// for ( i = 0; i < players.size; i++ )
+	// {
+	// 	players[i] VisionSetNaked("zombie_pentagon", 0.5);
+	// }
+	change_pentagon_vision();
 }
 
 change_pentagon_vision()
@@ -580,37 +506,6 @@ play_starting_vox()
     level thread maps\zombie_pentagon_amb::play_pentagon_announcer_vox( "zmb_vox_pentann_levelstart" );
 }
 
-// WW: script brush model lights for the office floor
-pentagon_brush_lights_init()
-{
-	// sbrush lights
-	sbrush_office_ceiling_lights_off = GetEntArray( "sbrushmodel_interior_office_lights", "targetname" );
-
-	if( IsDefined( sbrush_office_ceiling_lights_off ) && sbrush_office_ceiling_lights_off.size > 0 )
-	{
-		array_thread( sbrush_office_ceiling_lights_off, ::pentagon_brush_lights );
-	}
-}
-
-// WW: switches the on version for the off version when power hits
-pentagon_brush_lights()
-{
-	if( !IsDefined( self.target ) )
-	{
-		return;
-	}
-
-	self.off_version = GetEnt( self.target, "targetname" );
-
-	self.off_version Hide();
-
-	flag_wait( "power_on" );
-
-	self Hide();
-	self.off_version Show();
-
-}
-
 //******************************************************************************
 // PRECACHE FUNCTION
 //******************************************************************************
@@ -805,4 +700,172 @@ barricade_glitch_fix()
 	collision4 setmodel("collision_wall_64x64x10");
 	collision4.angles = (0, 6.19994, 0);
 	collision4 Hide();
+}
+
+//============================================================================================
+// T7 Mod Setup
+//============================================================================================
+setup_t7_mod()
+{
+	level._zm_perk_includes = ::pentagon_include_perks;
+	level._zm_powerup_includes = ::pentagon_include_powerups;
+	level._zm_packapunch_include = maps\apex\_zm_packapunch::include_t7_packapunch;
+	setup_extra_powerables();
+}
+
+//============================================================================================
+// Extra Powerable
+//============================================================================================
+setup_extra_powerables()
+{
+	flag_init("pentagon_powered_on", false);
+
+	maps\apex\_zm_power::add_powerable(false, ::pentagon_power_on, ::pentagon_power_off);
+	level thread petnagon_initial_power();
+}
+
+petnagon_initial_power()
+{
+	while(!flag_exists("all_players_connected"))
+	{
+		wait .05;
+	}
+
+	flag_wait("all_players_connected");
+	wait 1.5;
+
+	// initial power
+	lights = GetEntArray("sbrushmodel_interior_office_lights", "targetname");
+
+	for(i = 0; i < lights.size; i++)
+	{
+		if(!isdefined(lights[i].target))
+			continue;
+
+		// lights[i] Show();
+
+		target = GetEnt(lights[i].target, "targetname");
+		target Hide();
+	}
+}
+
+pentagon_power_off()
+{
+	lights = GetEntArray("sbrushmodel_interior_office_lights", "targetname");
+
+	for(i = 0; i < lights.size; i++)
+	{
+		if(!isdefined(lights[i].target))
+			continue;
+
+		lights[i] Show();
+
+		target = GetEnt(lights[i].target, "targetname");
+		target Hide();
+	}
+
+	stop_exploder(3500);
+	exploder(2000);
+	stop_exploder(2001);
+
+	level thread change_pentagon_vision();
+}
+
+pentagon_power_on()
+{
+	lights = GetEntArray("sbrushmodel_interior_office_lights", "targetname");
+
+	for(i = 0; i < lights.size; i++)
+	{
+		if(!isdefined(lights[i].target))
+			continue;
+
+		lights[i] Hide();
+
+		target = GetEnt(lights[i].target, "targetname");
+		target Show();
+	}
+
+	exploder(3500);
+	stop_exploder(2000);
+	exploder(2001);
+	level thread change_pentagon_vision();
+
+	if(flag("pentagon_powered_on"))
+		return;
+
+	flag_set("pentagon_powered_on");
+
+	maps\zombie_pentagon_teleporter::teleporter_init();
+	level thread maps\zombie_pentagon_teleporter::regular_portal_fx_on();
+	level thread maps\zombie_pentagon_amb::play_pentagon_announcer_vox("zmb_vox_pentann_poweron");
+}
+
+//============================================================================================
+// T7 Mod Setup - Powerups
+//============================================================================================
+pentagon_include_powerups()
+{
+	// T4
+	maps\apex\powerups\_zm_powerup_full_ammo::include_powerup_for_level();
+	maps\apex\powerups\_zm_powerup_insta_kill::include_powerup_for_level();
+	maps\apex\powerups\_zm_powerup_double_points::include_powerup_for_level();
+	maps\apex\powerups\_zm_powerup_carpenter::include_powerup_for_level();
+	maps\apex\powerups\_zm_powerup_nuke::include_powerup_for_level();
+
+	// T5
+	maps\apex\powerups\_zm_powerup_fire_sale::include_powerup_for_level();
+	maps\apex\powerups\_zm_powerup_minigun::include_powerup_for_level();
+	maps\apex\powerups\_zm_powerup_bonfire_sale::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_tesla::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_bonus_points::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_free_perk::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_random_weapon::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_empty_clip::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_lose_perk::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_lose_points::include_powerup_for_level();
+}
+
+//============================================================================================
+// T7 Mod Setup - Perks
+//============================================================================================
+pentagon_include_perks()
+{
+	maps\apex\perks\_zm_perk_juggernog::include_perk_for_level();
+	maps\apex\perks\_zm_perk_double_tap::include_perk_for_level();
+	maps\apex\perks\_zm_perk_sleight_of_hand::include_perk_for_level();
+	maps\apex\perks\_zm_perk_quick_revive::include_perk_for_level();
+
+	maps\apex\perks\_zm_perk_divetonuke::include_perk_for_level();
+	maps\apex\perks\_zm_perk_marathon::include_perk_for_level();
+	maps\apex\perks\_zm_perk_deadshot::include_perk_for_level();
+	maps\apex\perks\_zm_perk_additionalprimaryweapon::include_perk_for_level();
+
+	maps\apex\perks\_zm_perk_tombstone::include_perk_for_level();
+	maps\apex\perks\_zm_perk_chugabud::include_perk_for_level();
+	maps\apex\perks\_zm_perk_electric_cherry::include_perk_for_level();
+	maps\apex\perks\_zm_perk_vulture_aid::include_perk_for_level();
+
+	maps\apex\perks\_zm_perk_widows_wine::include_perk_for_level();
+
+	place_pentagon_perk_spawn_structs();
+}
+
+place_pentagon_perk_spawn_structs()
+{
+	// TODO: Remove later
+	// These perks are here for testing
+	// Wont be on kino on release
+	maps\apex\_zm_perks::generate_perk_spawn_struct("tombstone", (0, 0, 0), (0, 0, 0));
+	maps\apex\_zm_perks::generate_perk_spawn_struct("chugabud", (0, 128, 0), (0, 0, 0));
+	maps\apex\_zm_perks::generate_perk_spawn_struct("widows", (0, 256, 0), (0, 0, 0));
+
+	// TODO: Find spawn locations
+	// Using theater locations currently
+	maps\apex\_zm_perks::generate_perk_spawn_struct("divetonuke", (-1130.9, 1261.31, -15.875), (0, 0, 0)); // xSanchez78 - Kino Mod Divetonuk Location
+	maps\apex\_zm_perks::generate_perk_spawn_struct("marathon", (823.653, 1020.54, -15.875), (0, 0, 0)); // xSanchez78 - Kino Mod Marathon Location
+	maps\apex\_zm_perks::generate_perk_spawn_struct("deadshot", (630.073, 1239.64, -15.875), (0, 90, 0)); // xSanchez78 - Kino Mod Deadshot Location
+	// maps\apex\_zm_perks::generate_perk_spawn_struct("cherry", (600, -1012.48, 320.125), (0, 0, 0)); // xSanchez78 - Kino Mod Cherry Location
+	maps\apex\_zm_perks::generate_perk_spawn_struct("cherry", (-846.159, -1042.2, 80.125), (0, 180, 0)); // xSanchez78 - Kino Mod - Chugabud Location
+	maps\apex\_zm_perks::generate_perk_spawn_struct("vulture", (136.293, -462.601, 320.125), (0, 135, 0)); // xSanchez78 - Kino Mod Vulture Location
 }

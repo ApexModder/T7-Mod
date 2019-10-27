@@ -495,7 +495,6 @@ theater_power_on()
 	flag_set("theater_powered_on");
 	chandelier = GetEntArray("theater_chandelier", "targetname");
 
-	level notify("Pack_A_Punch_on");
 	level.quads_per_round = 4 * GetPlayers().size;
 	level notify("quad_round_can_end");
 	level.delay_spawners = undefined;

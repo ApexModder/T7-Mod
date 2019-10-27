@@ -78,6 +78,9 @@ pack_hideaway_init()
 		level.punch_trigger.flag NotSolid();
 	}
 
+	if(isdefined(level.punch_trigger.weapon))
+		level.punch_trigger.weapon LinkTo(level.punch_machine);
+
 	level.punch_trigger thread fake_linkto(hideaway);
 
 	// if(IsDefined(level.punch_trigger))
@@ -998,7 +1001,7 @@ defcon_sign_setup()
 		{
 			level.defcon_level++;
 
-			if( level.zombie_vars["zombie_powerup_bonfire_sale_on"] == false )
+			if( !is_true(level.zombie_vars["zombie_powerup_bonfire_sale_on"]) )
 			{
 			    level thread maps\zombie_pentagon_amb::play_pentagon_announcer_vox( "zmb_vox_pentann_defcon", level.defcon_level );
       }
@@ -1011,7 +1014,7 @@ defcon_sign_setup()
 			//link all portals to pack-a-punch room.
 			level.defcon_level = 5;
 
-			if( level.zombie_vars["zombie_powerup_bonfire_sale_on"] == false || !flag("bonfire_reset"))
+			if( !is_true(level.zombie_vars["zombie_powerup_bonfire_sale_on"]) || !flag("bonfire_reset"))
 			{
 			    level thread maps\zombie_pentagon_amb::play_pentagon_announcer_vox( "zmb_vox_pentann_defcon", level.defcon_level );
 			}
@@ -1022,7 +1025,7 @@ defcon_sign_setup()
 			//IPrintLnBold("all portals to pack room");
 			flag_set("defcon_active");
 
-			if( level.zombie_vars["zombie_powerup_bonfire_sale_on"] == false || !flag("bonfire_reset"))
+			if( !is_true(level.zombie_vars["zombie_powerup_bonfire_sale_on"]) || !flag("bonfire_reset"))
 			{
 			    level thread play_defcon5_alarms();
 			}

@@ -73,12 +73,11 @@ magic_box_update()
 	{
 		// check where the box is
 		if( ( !flag( "power_on" ) || flag( "moving_chest_now" ) )
-				&& level.zombie_vars[ "zombie_powerup_fire_sale_on" ] == 0 ) //
+				&& !is_true(level.zombie_vars[ "zombie_powerup_fire_sale_on" ]) ) //
 		{
 			box_mode = "no_power";
 		}
-		else if( IsDefined( level.zombie_vars["zombie_powerup_fire_sale_on"] )
-						&& level.zombie_vars["zombie_powerup_fire_sale_on"] == 1 )
+		else if( is_true( level.zombie_vars["zombie_powerup_fire_sale_on"] ) )
 		{
 			box_mode = "fire_sale";
 		}
@@ -93,7 +92,7 @@ magic_box_update()
 			case "no_power":
 				setclientsysstate( "box_indicator", level._pentagon_no_power );	// "no_power"
 				while( !flag( "power_on" )
-								&& level.zombie_vars[ "zombie_powerup_fire_sale_on" ] == 0 )
+								&& !is_true(level.zombie_vars[ "zombie_powerup_fire_sale_on" ]) )
 				{
 					wait( 0.1 );
 				}
@@ -101,7 +100,7 @@ magic_box_update()
 
 			case "fire_sale":
 				setclientsysstate( "box_indicator", level._pentagon_fire_sale );	// "fire sale"
-				while ( level.zombie_vars[ "zombie_powerup_fire_sale_on" ] == 1 )
+				while ( is_true(level.zombie_vars[ "zombie_powerup_fire_sale_on" ]) )
 				{
 					wait( 0.1 );
 				}
@@ -111,7 +110,7 @@ magic_box_update()
 			case "box_available":
 				setclientsysstate( "box_indicator", get_location_from_chest_index( level.chest_index ) );
 				while( !flag( "moving_chest_now" )
-								&& level.zombie_vars[ "zombie_powerup_fire_sale_on" ] == 0 )
+								&& !is_true(level.zombie_vars[ "zombie_powerup_fire_sale_on" ]) )
 				{
 					wait( 0.1 );
 				}

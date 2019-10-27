@@ -7,6 +7,7 @@ main()
 	level._uses_crossbow = true;
 	level._power_on = false;
 
+	setup_t7_mod();
 	// _load!
 	clientscripts\_zombiemode::main();
 	clientscripts\zombie_pentagon_fx::main();
@@ -26,10 +27,10 @@ main()
 	// Waits for power before starting the screens
 	level thread pentagon_ZPO_listener();
 	level thread pentagon_TLO_listener();
-	level thread set_visionset_office();
-	level thread set_visionset_warroom();
-	level thread set_visionset_lab();
-	level thread set_visionset_tech();
+	// level thread set_visionset_office();
+	// level thread set_visionset_warroom();
+	// level thread set_visionset_lab();
+	// level thread set_visionset_tech();
 
 	level thread pentagon_office_light_model_swap_init();
 }
@@ -46,46 +47,46 @@ register_zombie_types()
 //------------------------------------------------------------------------------
 // DCS 090210: clientsided vision set changes
 //------------------------------------------------------------------------------
-set_visionset_office()
-{
-	while(true)
-	{
-		level waittill( "vis1", ClientNum );
-		if(level._power_on == true)
-		{
-			VisionSetNaked(ClientNum, "zombie_pentagon_offices_poweroff", 0.0);
-		}
-		else
-		{
-			VisionSetNaked(ClientNum, "zombie_pentagon", 0.0);
-		}
-	}
-}
-set_visionset_warroom()
-{
-	while(true)
-	{
-		level waittill( "vis2", ClientNum );
-		VisionSetNaked(ClientNum, "zombie_pentagon_warroom", 2.0);
-	}
-}
+// set_visionset_office()
+// {
+// 	while(true)
+// 	{
+// 		level waittill( "vis1", ClientNum );
+// 		if(level._power_on == true)
+// 		{
+// 			VisionSetNaked(ClientNum, "zombie_pentagon_offices_poweroff", 0.0);
+// 		}
+// 		else
+// 		{
+// 			VisionSetNaked(ClientNum, "zombie_pentagon", 0.0);
+// 		}
+// 	}
+// }
+// set_visionset_warroom()
+// {
+// 	while(true)
+// 	{
+// 		level waittill( "vis2", ClientNum );
+// 		VisionSetNaked(ClientNum, "zombie_pentagon_warroom", 2.0);
+// 	}
+// }
 
-set_visionset_lab()
-{
-	while(true)
-	{
-		level waittill( "vis3", ClientNum );
-		VisionSetNaked(ClientNum, "zombie_pentagon_lab", 2.0);
-	}
-}
-set_visionset_tech()
-{
-	while(true)
-	{
-		level waittill( "vis4", ClientNum );
-		VisionSetNaked(ClientNum, "zombie_pentagon_electrician", 1.0);
-	}
-}
+// set_visionset_lab()
+// {
+// 	while(true)
+// 	{
+// 		level waittill( "vis3", ClientNum );
+// 		VisionSetNaked(ClientNum, "zombie_pentagon_lab", 2.0);
+// 	}
+// }
+// set_visionset_tech()
+// {
+// 	while(true)
+// 	{
+// 		level waittill( "vis4", ClientNum );
+// 		VisionSetNaked(ClientNum, "zombie_pentagon_electrician", 1.0);
+// 	}
+// }
 
 
 //------------------------------------------------------------------------------
@@ -344,4 +345,99 @@ pentagon_client_flags()
 update_player_profile(localClientNum, set, newEnt)
 {
 	UpdateGamerProfile(localClientNum);
+}
+
+//============================================================================================
+// T7 Mod Setup
+//============================================================================================
+setup_t7_mod()
+{
+	level._custom_visionset_registration = ::custom_visionset_registration;
+	level._zm_perk_includes = ::pentagon_include_perks;
+	level._zm_powerup_includes = ::pentagon_include_powerups;
+}
+
+//============================================================================================
+// T7 Mod Setup - VisionSets
+//============================================================================================
+custom_visionset_registration()
+{
+	// 													identifier				vision								priority	trans_in	trans_out	always_on
+	clientscripts\apex\_utility::visionset_register_info("pentagon_vision",		"zombie_pentagon",					0, 			0, 			0, 			true);
+	clientscripts\apex\_utility::visionset_register_info("offices_vision",		"zombie_pentagon_offices_poweroff",	1, 			0, 			0, 			false);
+	clientscripts\apex\_utility::visionset_register_info("warroom_vision",		"zombie_pentagon_warroom",			1, 			2, 			0, 			false);
+	clientscripts\apex\_utility::visionset_register_info("labs_vision",			"zombie_pentagon_lab",				1, 			2, 			0, 			false);
+	clientscripts\apex\_utility::visionset_register_info("electrician_vision",	"zombie_pentagon_electrician",		1, 			1, 			0, 			false);
+	clientscripts\apex\_utility::visionset_register_info("flare_aftereffect",	"flare",							3,			.4,			1,			false); // from xSanchez78 Kino mod
+	// 													identifier				vision								priority	trans_in	trans_out	always_on
+
+	level._pentagon_vision = [];
+
+	clientscripts\apex\_utility::add_level_notify_callback("vis1", ::pentagon_vision_update, "offices_vision");
+	clientscripts\apex\_utility::add_level_notify_callback("vis2", ::pentagon_vision_update, "warroom_vision");
+	clientscripts\apex\_utility::add_level_notify_callback("vis3", ::pentagon_vision_update, "labs_vision");
+	clientscripts\apex\_utility::add_level_notify_callback("vis4", ::pentagon_vision_update, "electrician_vision");
+	clientscripts\apex\_utility::add_level_notify_callback("ae1", ::pentagon_vision_update, "flare_aftereffect");
+}
+
+pentagon_vision_update(clientnum, vision)
+{
+	if(vision == "offices_vision" && !clientscripts\apex\_utility::is_true(level._power_on))
+		vision = "pentagon_vision";
+	if(isdefined(level._pentagon_vision[clientnum]) && level._pentagon_vision[clientnum] == vision)
+		return;
+
+	if(isdefined(level._pentagon_vision[clientnum]) && level._pentagon_vision[clientnum] != "pentagon_vision")
+		clientscripts\apex\_utility::visionset_deactivate(clientnum, level._pentagon_vision[clientnum]);
+
+	clientscripts\apex\_utility::visionset_activate(clientnum, vision);
+	level._pentagon_vision[clientnum] = vision;
+}
+
+//============================================================================================
+// T7 Mod Setup - Powerups
+//============================================================================================
+pentagon_include_powerups()
+{
+	// T4
+	clientscripts\apex\powerups\_zm_powerup_full_ammo::include_powerup_for_level();
+	clientscripts\apex\powerups\_zm_powerup_insta_kill::include_powerup_for_level();
+	clientscripts\apex\powerups\_zm_powerup_double_points::include_powerup_for_level();
+	clientscripts\apex\powerups\_zm_powerup_carpenter::include_powerup_for_level();
+	clientscripts\apex\powerups\_zm_powerup_nuke::include_powerup_for_level();
+
+	// T5
+	clientscripts\apex\powerups\_zm_powerup_fire_sale::include_powerup_for_level();
+	clientscripts\apex\powerups\_zm_powerup_minigun::include_powerup_for_level();
+	clientscripts\apex\powerups\_zm_powerup_bonfire_sale::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_tesla::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_bonus_points::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_free_perk::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_random_weapon::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_empty_clip::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_lose_perk::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_lose_points::include_powerup_for_level();
+}
+
+//============================================================================================
+// T7 Mod Setup - Perks
+//============================================================================================
+pentagon_include_perks()
+{
+	clientscripts\apex\perks\_zm_perk_juggernog::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_double_tap::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_sleight_of_hand::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_quick_revive::include_perk_for_level();
+
+	clientscripts\apex\perks\_zm_perk_divetonuke::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_marathon::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_deadshot::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_additionalprimaryweapon::include_perk_for_level();
+
+	clientscripts\apex\perks\_zm_perk_tombstone::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_chugabud::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_electric_cherry::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_vulture_aid::include_perk_for_level();
+
+	clientscripts\apex\perks\_zm_perk_widows_wine::include_perk_for_level();
 }
