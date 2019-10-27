@@ -302,23 +302,35 @@ trap_activate_think()
 		self._trap_use_trigs[i] SetCursorHint("HINT_NOICON");
 	}
 
-	if(!isdefined(self.script_flag_wait) || self.script_flag_wait == "power_on")
-	{
-		self.powerable_stub = maps\apex\_zm_power::add_powerable(false, ::trap_power_on, ::trap_power_off);
-		self.powerable_stub.trap = self;
-		self trap_set_string(&"ZOMBIE_NEED_POWER");
-	}
-	else
-	{
-		if(!flag_exists(self.script_flag_wait))
-			flag_init(self.script_flag_wait, false);
-		flag_wait(self.script_flag_wait);
-		self trap_activate();
-	}
+	// every trap requires power
+	// can apply a additional flag aswell
+	self.powerable_stub = maps\apex\_zm_power::add_powerable(false, ::trap_power_on, ::trap_power_off);
+	self.powerable_stub.trap = self;
+	self trap_set_string(&"ZOMBIE_NEED_POWER");
+
+	// if(!isdefined(self.script_flag_wait) || self.script_flag_wait == "power_on")
+	// {
+	// 	self.powerable_stub = maps\apex\_zm_power::add_powerable(false, ::trap_power_on, ::trap_power_off);
+	// 	self.powerable_stub.trap = self;
+	// 	self trap_set_string(&"ZOMBIE_NEED_POWER");
+	// }
+	// else
+	// {
+	// 	if(!flag_exists(self.script_flag_wait))
+	// 		flag_init(self.script_flag_wait, false);
+	// 	flag_wait(self.script_flag_wait);
+	// 	self trap_activate();
+	// }
 }
 
 trap_activate()
 {
+	self notify("zm_trap_activate");
+	self endon("zm_trap_activate"); // only 1 thread to activate the trap
+
+	if(isdefined(self.script_flag_wait) && self.script_flag_wait != "power_on")
+		flag_wait(self.script_flag_wait);
+
 	self trap_enable();
 	self trap_set_string(&"ZOMBIE_BUTTON_BUY_TRAP", self.zombie_cost);
 	array_thread(self._trap_use_trigs, self._trap_use_func, self);
@@ -327,7 +339,7 @@ trap_activate()
 trap_power_on()
 {
 	trap = self.trap;
-	trap trap_activate();
+	trap thread trap_activate();
 }
 
 trap_power_off()
