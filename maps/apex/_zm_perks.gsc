@@ -750,6 +750,45 @@ perk_hud_destroy(perk)
 		self perk_hud_destroy_legacy(perk);
 }
 
+perk_hud_start_flash(perk)
+{
+	if(!self has_perk(perk))
+		return;
+	if(!isdefined(self.perk_hud_flash))
+		self.perk_hud_flash = [];
+
+	if(!is_true(self.perk_hud_flash[perk]))
+	{
+		self.perk_hud_flash[perk] = true;
+		self perk_hud_flash(perk, true);
+
+		if(isdefined(level._custom_perks[perk].flash))
+			self PlayLocalSound(level._custom_perks[perk].flash);
+	}
+}
+
+perk_hud_stop_flash(perk, taken)
+{
+	if(!self has_perk(perk))
+		return;
+	if(!isdefined(self.perk_hud_flash))
+		self.perk_hud_flash = [];
+
+	if(is_true(self.perk_hud_flash[perk]))
+	{
+		self.perk_hud_flash[perk] = false;
+		self perk_hud_flash(perk, false);
+	}
+}
+
+perk_hud_flash(perk, on_off)
+{
+	if(is_true(level.zombie_vars["zombie_perk_use_menu_hud"]))
+		self perk_hud_flash_menu(perk, on_off);
+	else
+		self perk_hud_flash_legacy(perk, on_off);
+}
+
 update_perk_hud()
 {
 	if(is_true(level.zombie_vars["zombie_perk_use_menu_hud"]))
@@ -804,6 +843,19 @@ update_perk_hud_menu()
 	}
 }
 
+perk_hud_flash_menu(perk, on_off)
+{
+	if(!isdefined(self.perk_hud))
+		self.perk_hud = [];
+	if(!isdefined(self.perk_hud[perk]))
+		return;
+
+	if(is_true(on_off))
+		self SetClientDvar("ui_zm_perk_" + perk + "_alpha", .333);
+	else
+		self SetClientDvar("ui_zm_perk_" + perk + "_alpha", 1);
+}
+
 // Legacy Hud
 perk_hud_create_legacy(perk)
 {
@@ -837,6 +889,24 @@ perk_hud_destroy_legacy(perk)
 
 	self.perk_hud[perk] destroy_hud();
 	self.perk_hud[perk] = undefined;
+}
+
+perk_hud_flash_legacy(perk, on_off)
+{
+	if(!isdefined(self.perk_hud))
+		self.perk_hud = [];
+	if(!isdefined(self.perk_hud[perk]))
+		return;
+
+	if(is_true(on_off) && !is_true(self.perk_hud[perk].flash))
+	{
+		self.perk_hud[perk].flash = true;
+		self.perk_hud[perk] ScaleOverTime(.05, 32, 32);
+		wait .3;
+		self.perk_hud[perk] ScaleOverTime(.05, 24, 24);
+		wait .3;
+		self.perk_hud[perk].flash = false;
+	}
 }
 
 update_perk_hud_legacy()

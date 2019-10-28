@@ -60,6 +60,7 @@ main()
 	level.random_pandora_box_start = false;
 
 	level thread maps\_callbacksetup::SetupCallbacks();
+	setup_t7_mod();
 
 	level.quad_move_speed = 35;
 
@@ -92,10 +93,6 @@ main()
 	// DO ACTUAL ZOMBIEMODE INIT
 	maps\_zombiemode::main();
 
-	maps\_zombiemode_weap_sickle::init();
-	maps\_zombiemode_weap_black_hole_bomb::init();
-	maps\_zombiemode_weap_nesting_dolls::init();
-
 	// Turn off generic battlechatter - Steve G
 	battlechatter_off("allies");
 	battlechatter_off("axis");
@@ -114,7 +111,6 @@ main()
 
 	level thread maps\_zombiemode_zone_manager::manage_zones( init_zones );
 
-	level thread electric_switch();
 	level thread maps\_zombiemode_auto_turret::init();
 	level thread maps\zombie_cosmodrome_lander::init();
 	level thread maps\zombie_cosmodrome_traps::init_traps();
@@ -285,37 +281,37 @@ centrifuge_jumpdown_fix()
 //
 //	ZOMBIEMODE OVERRIDES
 //
-magic_box_override()
-{
-	flag_wait( "all_players_connected" );
+// magic_box_override()
+// {
+// 	flag_wait( "all_players_connected" );
 
-	players = get_players();
-	level.chest_min_move_usage = players.size;
+// 	players = get_players();
+// 	level.chest_min_move_usage = players.size;
 
-	chest = level.chests[level.chest_index];
-	while ( level.chest_accessed < level.chest_min_move_usage )
-	{
-		chest waittill( "chest_accessed" );
-	}
+// 	chest = level.chests[level.chest_index];
+// 	while ( level.chest_accessed < level.chest_min_move_usage )
+// 	{
+// 		chest waittill( "chest_accessed" );
+// 	}
 
-	// Okay it's been accessed, now we need to fake move it.
-	chest disable_trigger();
+// 	// Okay it's been accessed, now we need to fake move it.
+// 	chest disable_trigger();
 
-	// SAMANTHA IS BACK!
-	chest.chest_lid maps\apex\_zm_weapons::treasure_chest_lid_open();
-//	self.chest_user thread maps\apex\_zm_weapons::treasure_chest_move_vo();
-	chest thread maps\apex\_zm_weapons::treasure_chest_move();
+// 	// SAMANTHA IS BACK!
+// 	chest.chest_lid maps\apex\_zm_weapons::treasure_chest_lid_open();
+// //	self.chest_user thread maps\apex\_zm_weapons::treasure_chest_move_vo();
+// 	chest thread maps\apex\_zm_weapons::treasure_chest_move();
 
-	wait 0.5;	// we need a wait here before this notify
-	level notify("weapon_fly_away_start");
-	wait 2;
-// 	model MoveZ(500, 4, 3);
-// 	model waittill("movedone");
-// 	model delete();
-	chest notify( "box_moving" );
-	level notify("weapon_fly_away_end");
-	level.chest_min_move_usage = undefined;
-}
+// 	wait 0.5;	// we need a wait here before this notify
+// 	level notify("weapon_fly_away_start");
+// 	wait 2;
+// // 	model MoveZ(500, 4, 3);
+// // 	model waittill("movedone");
+// // 	model delete();
+// 	chest notify( "box_moving" );
+// 	level notify("weapon_fly_away_end");
+// 	level.chest_min_move_usage = undefined;
+// }
 
 
 //*****************************************************************************
@@ -492,100 +488,28 @@ powercell_dropoff()
 // 	}
 }
 
-//*****************************************************************************
-// ELECTRIC SWITCH
-// once this is used, it activates other objects in the map
-// and makes them available to use
-//*****************************************************************************
-electric_switch()
-{
-	trig = getent("use_elec_switch","targetname");
-	trig sethintstring(&"ZOMBIE_ELECTRIC_SWITCH");
-	trig setcursorhint( "HINT_NOICON" );
-
-	level thread wait_for_power();
-
-	trig waittill("trigger",user);
-
-	trig delete();
-	flag_set( "power_on" );
-	Objective_State(8,"done");
-
-	playsoundatposition( "zmb_poweron_front", (0,0,0) );
-}
-
-
-//
-//	Wait for the power_on flag to be set.  This is needed to work in conjunction with
-//		the devgui cheat.
-//
-wait_for_power()
-{
-	master_switch = getent("elec_switch","targetname");
-	master_switch notsolid();
-
-	flag_wait( "power_on" );
-
-    level thread maps\zombie_cosmodrome_amb::play_cosmo_announcer_vox( "vox_ann_power_switch" );
-
-	master_switch rotateroll(-90,.3);
-	master_switch playsound("zmb_switch_flip");
-
-	flag_set( "lander_power" );
-
-
-	// Set Perk Machine Notifys
-	level notify("revive_on");
-	level notify("juggernog_on");
-	level notify("sleight_on");
-//	level notify("doubletap_on");
-	level notify("divetonuke_on");
-	level notify("marathon_on");
-	level notify("Pack_A_Punch_on" );
-
-//	clientnotify( "power_on" );
-
-	clientnotify("ZPO");	 // Zombie Power On.
-
-	//FX associated with turning on the power
-	exploder(5401);
-
-
-	// Swap to the "power on" vision set
-	// level.zombie_visionset = "zombie_cosmodrome";
-	// VisionSetNaked( level.zombie_visionset, 2 );
-
-	master_switch waittill("rotatedone");
-	playfx(level._effect["switch_sparks"] ,getstruct("elec_switch_fx","targetname").origin);
-
-	//Sound - Shawn J  - adding temp sound to looping sparks & turning on power sources
-	//master_switch playloopsound("amb_sparks_loop");
-	master_switch playsound("zmb_turn_on");
-	thread maps\zombie_cosmodrome_amb::power_clangs();
-}
-
 ////////////////////////////////////////////////////////////////////////////
 
-custom_pandora_show_func( anchor, anchorTarget, pieces )
-{
-	level.pandora_light.angles = (-90, anchorTarget.angles[1] + 180, 0);
-	level.pandora_light moveto(anchorTarget.origin, 0.05);
-	wait(1);
-	playfx( level._effect["lght_marker_flare"],level.pandora_light.origin );
-}
+// custom_pandora_show_func( anchor, anchorTarget, pieces )
+// {
+// 	level.pandora_light.angles = (-90, anchorTarget.angles[1] + 180, 0);
+// 	level.pandora_light moveto(anchorTarget.origin, 0.05);
+// 	wait(1);
+// 	playfx( level._effect["lght_marker_flare"],level.pandora_light.origin );
+// }
 
-custom_pandora_fx_func()
-{
-	// Hacked to get it to the start location. DCS
-	start_chest = GetEnt("start_chest", "script_noteworthy");
-	anchor = GetEnt(start_chest.target, "targetname");
-	anchorTarget = GetEnt(anchor.target, "targetname");
+// custom_pandora_fx_func()
+// {
+// 	// Hacked to get it to the start location. DCS
+// 	start_chest = GetEnt("start_chest", "script_noteworthy");
+// 	anchor = GetEnt(start_chest.target, "targetname");
+// 	anchorTarget = GetEnt(anchor.target, "targetname");
 
-	level.pandora_light = Spawn( "script_model", anchorTarget.origin );
-	level.pandora_light.angles = anchorTarget.angles + (-90, 0, 0);
-	level.pandora_light SetModel( "tag_origin" );
-	playfxontag(level._effect["lght_marker"], level.pandora_light, "tag_origin");
-}
+// 	level.pandora_light = Spawn( "script_model", anchorTarget.origin );
+// 	level.pandora_light.angles = anchorTarget.angles + (-90, 0, 0);
+// 	level.pandora_light SetModel( "tag_origin" );
+// 	playfxontag(level._effect["lght_marker"], level.pandora_light, "tag_origin");
+// }
 
 //*****************************************************************************
 // rotating centrifuge (will cause damage later)
@@ -724,4 +648,106 @@ cosmodrome_fade_in_notify()
 	level ClientNotify( "ZID" );
 
 	wait_network_frame();
+}
+
+//============================================================================================
+// T7 Mod Setup
+//============================================================================================
+setup_t7_mod()
+{
+	level._zm_perk_includes = ::cosmodrome_include_perks;
+	level._zm_powerup_includes = ::cosmodrome_include_powerups;
+	level._zm_packapunch_include = maps\apex\_zm_packapunch::include_t7_packapunch;
+	setup_extra_powerables();
+}
+
+//============================================================================================
+// Extra Powerable
+//============================================================================================
+setup_extra_powerables()
+{
+	flag_init("cosmodrome_powered_on", false);
+
+	maps\apex\_zm_power::add_powerable(false, ::cosmodrome_power_on, undefined);
+}
+
+cosmodrome_power_on()
+{
+	PlaySoundAtPosition("zmb_poweron_front", (0, 0, 0));
+	level thread maps\zombie_cosmodrome_amb::play_cosmo_announcer_vox( "vox_ann_power_switch" );
+	exploder(5401);
+
+	if(flag("cosmodrome_powered_on"))
+		return;
+
+	flag_set("lander_power");
+	flag_set("cosmodrome_powered_on");
+	level thread maps\zombie_cosmodrome_amb::power_clangs();
+}
+
+//============================================================================================
+// T7 Mod Setup - Powerups
+//============================================================================================
+cosmodrome_include_powerups()
+{
+	// T4
+	maps\apex\powerups\_zm_powerup_full_ammo::include_powerup_for_level();
+	maps\apex\powerups\_zm_powerup_insta_kill::include_powerup_for_level();
+	maps\apex\powerups\_zm_powerup_double_points::include_powerup_for_level();
+	maps\apex\powerups\_zm_powerup_carpenter::include_powerup_for_level();
+	maps\apex\powerups\_zm_powerup_nuke::include_powerup_for_level();
+
+	// T5
+	maps\apex\powerups\_zm_powerup_fire_sale::include_powerup_for_level();
+	maps\apex\powerups\_zm_powerup_minigun::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_bonfire_sale::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_tesla::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_bonus_points::include_powerup_for_level();
+	maps\apex\powerups\_zm_powerup_free_perk::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_random_weapon::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_empty_clip::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_lose_perk::include_powerup_for_level();
+	// maps\apex\powerups\_zm_powerup_lose_points::include_powerup_for_level();
+}
+
+//============================================================================================
+// T7 Mod Setup - Perks
+//============================================================================================
+cosmodrome_include_perks()
+{
+	maps\apex\perks\_zm_perk_juggernog::include_perk_for_level();
+	maps\apex\perks\_zm_perk_double_tap::include_perk_for_level();
+	maps\apex\perks\_zm_perk_sleight_of_hand::include_perk_for_level();
+	maps\apex\perks\_zm_perk_quick_revive::include_perk_for_level();
+
+	maps\apex\perks\_zm_perk_divetonuke::include_perk_for_level();
+	maps\apex\perks\_zm_perk_marathon::include_perk_for_level();
+	maps\apex\perks\_zm_perk_deadshot::include_perk_for_level();
+	maps\apex\perks\_zm_perk_additionalprimaryweapon::include_perk_for_level();
+
+	maps\apex\perks\_zm_perk_tombstone::include_perk_for_level();
+	maps\apex\perks\_zm_perk_chugabud::include_perk_for_level();
+	maps\apex\perks\_zm_perk_electric_cherry::include_perk_for_level();
+	maps\apex\perks\_zm_perk_vulture_aid::include_perk_for_level();
+
+	maps\apex\perks\_zm_perk_widows_wine::include_perk_for_level();
+
+	place_cosmodrome_perk_spawn_structs();
+}
+
+place_cosmodrome_perk_spawn_structs()
+{
+	// TODO: Remove later
+	// These perks are here for testing
+	// Wont be on kino on release
+	maps\apex\_zm_perks::generate_perk_spawn_struct("tombstone", (0, 0, 0), (0, 0, 0));
+	maps\apex\_zm_perks::generate_perk_spawn_struct("chugabud", (0, 128, 0), (0, 0, 0));
+	maps\apex\_zm_perks::generate_perk_spawn_struct("widows", (0, 256, 0), (0, 0, 0));
+
+	maps\apex\_zm_perks::generate_perk_spawn_struct("divetonuke", (-1130.9, 1261.31, -15.875), (0, 0, 0)); // xSanchez78 - Kino Mod Divetonuk Location
+	maps\apex\_zm_perks::generate_perk_spawn_struct("marathon", (823.653, 1020.54, -15.875), (0, 0, 0)); // xSanchez78 - Kino Mod Marathon Location
+	maps\apex\_zm_perks::generate_perk_spawn_struct("deadshot", (630.073, 1239.64, -15.875), (0, 90, 0)); // xSanchez78 - Kino Mod Deadshot Location
+	// maps\apex\_zm_perks::generate_perk_spawn_struct("cherry", (600, -1012.48, 320.125), (0, 0, 0)); // xSanchez78 - Kino Mod Cherry Location
+	maps\apex\_zm_perks::generate_perk_spawn_struct("cherry", (-846.159, -1042.2, 80.125), (0, 180, 0)); // xSanchez78 - Kino Mod - Chugabud Location
+	maps\apex\_zm_perks::generate_perk_spawn_struct("vulture", (136.293, -462.601, 320.125), (0, 135, 0)); // xSanchez78 - Kino Mod Vulture Location
 }

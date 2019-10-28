@@ -3,7 +3,7 @@
 #include maps\_utility;
 #include maps\_zombiemode_utility;
 #include maps\_ambientpackage;
-#include maps\_music; 
+#include maps\_music;
 #include maps\_busing;
 #include maps\_zombiemode_audio;
 
@@ -28,13 +28,13 @@
 //	4) Pressure Plate - All players must stand in one area for 120 seconds.
 //		Area is the rocket pad (1378 381 -332).  A clock on the wall will appear
 //		to show you your progress.
-//	5) Lander Words - someone must ride the lander as it's called to spell out the 
+//	5) Lander Words - someone must ride the lander as it's called to spell out the
 //		key phrase.  Letters appear only when the lander is called, but someone must
 //		be on the lander to grab them.
 //		Centrifuge to Storage (L), then back to Centrifuge (U), then Catwalks (N), then back to
 //		Storage (A)
 //	6) Use all weapons in combination @ the focal point (-18 -1366 -173)
-//		Throw a black hole bomb there, then shoot the portal with an upgraded ray gun, 
+//		Throw a black hole bomb there, then shoot the portal with an upgraded ray gun,
 //		an upgraded Thundergun and explode a doll near it before it disappears.
 //
 init()
@@ -99,7 +99,7 @@ init()
 // 			players[i] thread reward_wait();
 // 		}
  	}
-*/ 
+*/
 	teleport_target_event();	// Teleport the device hub
 	reroute_power_event();		// Attempts to activate the Casimir Device
 	sync_switch_event();		// Removes Security Lockdown
@@ -125,7 +125,7 @@ play_easter_egg_audio( alias, sound_ent, text )
         #/
         return;
     }
-    
+
     sound_ent PlaySound( alias, "sounddone" );
     sound_ent waittill( "sounddone" );
 }
@@ -169,7 +169,7 @@ teleport_target_event()
 	// Trigger for bomb distance check - lowered the origin so the hit detection pics up all ground levels
 	level.teleport_target_trigger = Spawn( "trigger_radius", teleport_target_start.origin + (0,0,-70), 0, 125, 100 );	// flags, radius, height
 
-	// Function override in _zombiemode_weap_black_hole_bomb, make the bomb check to see 
+	// Function override in _zombiemode_weap_black_hole_bomb, make the bomb check to see
 	//	if it's in our trigger
 	level.black_hole_bomb_loc_check_func = ::bhb_teleport_loc_check;
 	flag_wait( "target_teleported" );
@@ -188,7 +188,8 @@ bhb_teleport_loc_check( grenade, model, info )
 	if( IsDefined( level.teleport_target_trigger ) && grenade IsTouching( level.teleport_target_trigger ) )
 	{
 		model SetClientFlag( level._SCRIPTMOVER_CLIENT_FLAG_BLACKHOLE );
-		grenade thread maps\_zombiemode_weap_black_hole_bomb::do_black_hole_bomb_sound( model, info ); // WW: This might not work if it is based on the model
+		// grenade thread maps\_zombiemode_weap_black_hole_bomb::do_black_hole_bomb_sound( model, info ); // WW: This might not work if it is based on the model
+		grenade thread maps\apex\weapons\_zm_weap_black_hole_bomb::do_black_hole_bomb_sound(model, info);
 		level thread teleport_target( grenade, model );
 		return true;
 	}
@@ -222,7 +223,7 @@ teleport_target( grenade, model )
 	level.teleport_target MoveTo( teleport_target_end.origin, 0.05 );
 	level.teleport_target StopLoopSound( 1 );
 	wait( 0.5 );
-    
+
 	level.teleport_target Show();
     PlayFXOnTag( level._effect[ "black_hole_bomb_event_horizon" ], level.teleport_target, "tag_origin" );
     level.teleport_target PlaySound( "zmb_gersh_teleporter_go" );
@@ -274,7 +275,7 @@ wait_for_use( monitor )
 				monitor PlaySound( "zmb_comp_activate" );
 				return;
 			}
-	        
+
 			wait(.05);
 		}
 	}
@@ -329,7 +330,7 @@ reveal_switch()
 
 		trig delete();
 	}
-    
+
     button StopLoopSound( 1 );
 	button MoveTo( self.origin, time );
 	wait( time );
@@ -360,7 +361,7 @@ wait_for_sync_use( ss )
 				playsoundatposition( "zmb_push_button", ss.origin );
 				ss.pressed = 1;
 			}
-	        
+
 			wait(.05);
 		}
 	}
@@ -401,12 +402,12 @@ switch_watcher()
 			if ( pressed == 4 )
 			{
 				flag_set( "switches_synced" );
-				
+
 				for ( i=0; i<switches.size; i++ )
 			    {
                     playsoundatposition( "zmb_misc_activate", switches[i].origin );
 				}
-				
+
 				return;
 			}
 			wait( 0.05 );
@@ -488,9 +489,9 @@ area_timer( time )
 		{
 			continue;
 		}
-        
+
         self PlaySound( "zmb_pressure_plate_trigger" );
-        
+
 		// Start the countdown
 		time_remaining = time;
 		timer_hand RotatePitch( 360, time );
@@ -530,29 +531,36 @@ area_timer( time )
 
 			// Need an .fx entry for my nuke kluge, but just in case someone is
 			//	actually using this field, save it.
-			players = get_players();
-			temp_fx = undefined;
-			if ( IsDefined( players[0].fx ) )
-			{
-				temp_fx = players[0].fx;
-			}
+			// players = get_players();
+			// temp_fx = undefined;
+			// if ( IsDefined( players[0].fx ) )
+			// {
+			// 	temp_fx = players[0].fx;
+			// }
 
 			// DING!  BOOM!
 			timer_hand playsound( "zmb_perks_packa_ready" );
-			players[0].fx = level.zombie_powerups[ "nuke" ].fx;
-			level thread maps\_zombiemode_powerups::nuke_powerup( players[0] );
+			// players[0].fx = level.zombie_powerups[ "nuke" ].fx;
+			// level thread maps\_zombiemode_powerups::nuke_powerup( players[0] );
 			clock StopLoopSound( 1 );
-			wait( 1.0 );
+			// wait( 1.0 );
+			// clock step changed
+			// rather than auto activating a nuke
+			// a reward nuke is now dropped, that can not timeout
+			// next step does not require nuke to be grabbed
+			// players can advance as soon as clock is finished ticking
+			// maps\apex\_zm_powerups::specific_powerup_drop("nuke", self.origin + (0, 0, 40), undefined, false);
+			maps\apex\_zm_powerups::specific_powerup_drop("nuke", (1379, 380.5, -320), undefined, false); // same spot as double points rocket can drop
 
 			// cleanup
-			if ( IsDefined( temp_fx ) )
-			{
-				players[0].fx = temp_fx;
-			}
-			else
-			{
-				players[0].fx = undefined;
-			}
+			// if ( IsDefined( temp_fx ) )
+			// {
+			// 	players[0].fx = temp_fx;
+			// }
+			// else
+			// {
+			// 	players[0].fx = undefined;
+			// }
 			clock Delete();
 			timer_hand Delete();
 
@@ -564,7 +572,7 @@ area_timer( time )
 
 //###################################################################
 //	Spell out the passkey using lander calls
-//	
+//
 //###################################################################
 lander_passkey_event()
 {
@@ -605,7 +613,7 @@ lander_passkey_event()
 
 
 //
-//	
+//
 lander_monitor()
 {
 	lander = getent( "lander", "targetname" );
@@ -772,7 +780,7 @@ weapon_combo_event()
 //	See if the bomb hit the target area
 bhb_combo_loc_check( grenade, model, info )
 {
-	if ( IsDefined( level.black_hold_bomb_target_trig ) && 
+	if ( IsDefined( level.black_hold_bomb_target_trig ) &&
 		 grenade IsTouching( level.black_hold_bomb_target_trig ) )
 	{
 		trig = Spawn( "trigger_damage", grenade.origin, 0, 15, 72 );
@@ -885,7 +893,7 @@ kill_trig_on_death( trig )
 	self waittill( "death" );
 
 	trig delete();
-	
+
 	if( flag( "thundergun_hit" ) && !flag( "weapons_combined" ) )
 	{
 	    level thread play_egg_vox( "vox_ann_egg6p1_success", "vox_gersh_egg6_fail2", 7 );
@@ -894,7 +902,7 @@ kill_trig_on_death( trig )
 	{
 	    level thread play_egg_vox( undefined, "vox_gersh_egg6_fail1", 6 );
 	}
-	
+
 	flag_clear( "thundergun_hit" );
 }
 
@@ -910,12 +918,12 @@ soul_release( model, origin )
 	fx = PlayFXOnTag( level._effect["gersh_spark"], soul, "tag_origin" );
 
 	time = 20;
-	
+
 	model waittill( "death" );
-	
+
 	level thread play_egg_vox( "vox_ann_egg6_success", "vox_gersh_egg6_success", 9 );
 	level thread wait_for_gersh_vox();
-	
+
 	soul MoveZ( 2500, time, time - 1 );
 	wait( time );
 
@@ -929,13 +937,34 @@ soul_release( model, origin )
 wait_for_gersh_vox()
 {
     wait(12.5);
-    
+
+	base = level.zombie_vars["zombie_powerup_active_time"];
+	level.zombie_vars["zombie_powerup_active_time"] = base * 2;
+
 	// Give reward!
 	players = GetPlayers();
 	for ( i=0; i<players.size; i++ )
 	{
 		players[i] thread reward_wait();
 	}
+
+	// reset powerup active time back
+	// after all players have the death machine
+	for(i = 0; i < players.size; i++)
+	{
+		player = players[i];
+
+		// player disconnected
+		if(!isdefined(player))
+			continue;
+
+		while(isdefined(player) && !is_player_valid(player) || (player UseButtonPressed() || player in_revive_trigger()))
+		{
+			wait .05;
+		}
+	}
+
+	level.zombie_vars["zombie_powerup_active_time"] = base;
 }
 
 
@@ -946,10 +975,11 @@ reward_wait()
 	while ( !is_player_valid( self ) ||
 			( self UseButtonPressed() && self in_revive_trigger() ) )
 	{
-		wait( 1.0 ); 
+		wait( 1.0 );
 	}
 
-	level thread maps\_zombiemode_powerups::minigun_weapon_powerup( self, 90 );
+	self thread maps\apex\_zm_powerups::timed_powerup_think("minigun");
+	// level thread maps\_zombiemode_powerups::minigun_weapon_powerup( self, 90 );
 	//self thread maps\_zombiemode_powerups::powerup_vo( "insta_kill" );
 	//playsoundatposition("zmb_powerup_grabbed", self.origin);
 }
@@ -961,23 +991,23 @@ play_egg_vox( ann_alias, gersh_alias, plr_num )
     {
         level maps\zombie_cosmodrome_amb::play_cosmo_announcer_vox( ann_alias );
     }
-    
+
     if( IsDefined( gersh_alias ) )
     {
         level maps\zombie_cosmodrome_amb::play_gersh_vox( gersh_alias );
     }
-    
+
     if( IsDefined( plr_num ) )
     {
         players = get_players();
         rand = RandomIntRange( 0, players.size );
-        
+
         players[rand] maps\_zombiemode_audio::create_and_play_dialog( "eggs", "gersh_response", undefined, plr_num );
     }
 }
 
 samantha_is_angry()
-{   
+{
     playsoundatposition( "zmb_samantha_earthquake", (0,0,0) );
     playsoundatposition( "zmb_samantha_whispers", (0,0,0) );
     wait(6);

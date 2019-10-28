@@ -2415,7 +2415,8 @@ monkey_zombie_bhb_teleport()
 	self unlink();
 	so delete();
 
-	maps\_zombiemode_weap_black_hole_bomb::black_hole_bomb_create_exit_portal( self.origin );
+	// maps\_zombiemode_weap_black_hole_bomb::black_hole_bomb_create_exit_portal( self.origin );
+	maps\apex\weapons\_zm_weap_black_hole_bomb::black_hole_bomb_create_exit_portal(self.origin);
 }
 
 monkey_zombie_bhb_failsafe()

@@ -463,7 +463,8 @@ rocket_explode()
 
 	wait( 2.0 );
 
-	maps\_zombiemode_powerups::specific_powerup_drop( "double_points", (1379, 380.5, -320) );
+	// maps\_zombiemode_powerups::specific_powerup_drop( "double_points", (1379, 380.5, -320) );
+	maps\apex\_zm_powerups::specific_powerup_drop("double_points", (1379, 380.5, -320), undefined, false);
 
 
 }

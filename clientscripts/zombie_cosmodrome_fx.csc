@@ -27,7 +27,7 @@ main()
 		precache_scripted_fx();
 	}
 
-	level thread clientscripts\_zombiemode::init_perk_machines_fx();
+	// level thread clientscripts\_zombiemode::init_perk_machines_fx();
 	level thread lander_dock_lights_red();
 	level thread lander_dock_lights_green();
 

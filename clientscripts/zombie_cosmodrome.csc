@@ -9,30 +9,7 @@ main()
 	level._uses_crossbow = true;
 	level._power_on = false;
 	level.rocket_num = 0;
-
-	// define the on and off vision set priorities
-	level._visionset_map_nopower = "zombie_cosmodrome_nopower"; // cheat_bw
-	level._visionset_priority_map_nopower = 1;
-
-	level._visionset_map_sudden_power = "zombie_cosmodrome_powerUP"; // the vision set as the power turns on
-	level._visionset_priority_map_sudden_power = 2;
-
-	level._visionset_map_poweron = "zombie_cosmodrome_powerON"; // the power is on and the player's eyes are adjusted
-	level._visionset_priority_map_poweron = 3;
-
-	level._visionset_map_monkey = "zombie_cosmodrome_monkey";
-	level._visionset_priority_map_monkey = 4;
-
-	level._visionset_map_begin = "zombie_cosmodrome_begin";
-	level._visionset_priority_map_begin = 5;
-
-	level._visionset_map_monkeylandon = "flare";
-	level._visionset_priority_map_monkeylandon = 6;
-	level._visionset_monkey_transition_time_on = 0.5;
-	level._visionset_monkey_transition_time_off = 3.0;
-
-	level._visionset_zombie_sudden_power_transition_time = 0.1;
-	level._visionset_zombie_transition_time = 2.5; // how much time it takes for the vision set to apply
+	setup_t7_mod();
 
 	//fog values & priorites
 	level._fog_settings_monkey = "monkey";
@@ -43,10 +20,6 @@ main()
 
 	level._fog_settings_default = "normal";
 	level._fog_settings_default_priority = 1;
-
-
-	// setup weapons
-	include_weapons();
 
 	// rumble for centrifuge
 	PreCacheRumble( "damage_heavy" );
@@ -95,9 +68,6 @@ main()
 
 	//when rocket blows up
 	level thread init_rocket_debris();
-
-	// black hole bomb
-	clientscripts\_zombiemode_weap_black_hole_bomb::init();
 
 	clientscripts\zombie_cosmodrome_fx::main();
 	thread clientscripts\zombie_cosmodrome_amb::main();
@@ -185,104 +155,6 @@ register_zombie_types()
 	character\clientscripts\c_zom_cosmo_spetznaz::register_gibs();
 	character\clientscripts\c_zom_cosmo_cosmonaut::register_gibs();
 
-}
-
-//------------------------------------------------------------------------------
-include_weapons()
-{
-	include_weapon( "frag_grenade_zm", false );
-	include_weapon( "claymore_zm", false );
-
-	//	Weapons - Pistols
-	include_weapon( "m1911_zm", false );						// colt
-	include_weapon( "m1911_upgraded_zm", false );
-	include_weapon( "python_zm" );						// 357
-	include_weapon( "python_upgraded_zm", false );
-  	include_weapon( "cz75_zm" );
-  	include_weapon( "cz75_upgraded_zm", false );
-
-	//	Weapons - Semi-Auto Rifles
-	include_weapon( "m14_zm", false );							// gewehr43
-	include_weapon( "m14_upgraded_zm", false );
-
-	//	Weapons - Burst Rifles
-	include_weapon( "m16_zm", false );
-	include_weapon( "m16_gl_upgraded_zm", false );
-	include_weapon( "g11_lps_zm" );
-	include_weapon( "g11_lps_upgraded_zm", false );
-	include_weapon( "famas_zm" );
-	include_weapon( "famas_upgraded_zm", false );
-
-	//	Weapons - SMGs
-	include_weapon( "ak74u_zm", false );						// thompson, mp40, bar
-	include_weapon( "ak74u_upgraded_zm", false );
-	include_weapon( "mp5k_zm", false );
-	include_weapon( "mp5k_upgraded_zm", false );
-	include_weapon( "mp40_zm", false );
-	include_weapon( "mp40_upgraded_zm", false );
-	include_weapon( "mpl_zm", false );
-	include_weapon( "mpl_upgraded_zm", false );
-	include_weapon( "pm63_zm", false );
-	include_weapon( "pm63_upgraded_zm", false );
-	include_weapon( "spectre_zm" );
-	include_weapon( "spectre_upgraded_zm", false );
-
-	//	Weapons - Dual Wield
-  	include_weapon( "cz75dw_zm" );
-  	include_weapon( "cz75dw_upgraded_zm", false );
-
-	//	Weapons - Shotguns
-	include_weapon( "ithaca_zm", false );						// shotgun
-	include_weapon( "ithaca_upgraded_zm", false );
-	include_weapon( "rottweil72_zm", false );
-	include_weapon( "rottweil72_upgraded_zm", false );
-	include_weapon( "spas_zm" );						//
-	include_weapon( "spas_upgraded_zm", false );
-	include_weapon( "hs10_zm" );
-	include_weapon( "hs10_upgraded_zm", false );
-
-	//	Weapons - Assault Rifles
-	include_weapon( "aug_acog_zm" );
-	include_weapon( "aug_acog_mk_upgraded_zm", false );
-	include_weapon( "galil_zm" );
-	include_weapon( "galil_upgraded_zm", false );
-	include_weapon( "commando_zm" );
-	include_weapon( "commando_upgraded_zm", false );
-	include_weapon( "fnfal_zm" );
-	include_weapon( "fnfal_upgraded_zm", false );
-
-	//	Weapons - Sniper Rifles
-	include_weapon( "dragunov_zm" );					// ptrs41
-	include_weapon( "dragunov_upgraded_zm", false );
-	include_weapon( "l96a1_zm" );
-	include_weapon( "l96a1_upgraded_zm", false );
-
-	//	Weapons - Machineguns
-	include_weapon( "rpk_zm" );							// mg42, 30 cal, ppsh
-	include_weapon( "rpk_upgraded_zm", false );
-	include_weapon( "hk21_zm" );
-	include_weapon( "hk21_upgraded_zm", false );
-
-	//	Weapons - Misc
-	include_weapon( "m72_law_zm" );
-	include_weapon( "m72_law_upgraded_zm", false );
-	include_weapon( "china_lake_zm" );
-	include_weapon( "china_lake_upgraded_zm", false );
-
-	//	Weapons - Special
-	include_weapon( "zombie_black_hole_bomb" );
-	include_weapon( "zombie_nesting_dolls" );
-	include_weapon( "ray_gun_zm" );
-	include_weapon( "ray_gun_upgraded_zm", false );
-	include_weapon( "thundergun_zm" );
-	include_weapon( "thundergun_upgraded_zm", false );
-	include_weapon( "crossbow_explosive_zm" );
-	include_weapon( "crossbow_explosive_upgraded_zm", false );
-
-	include_weapon( "knife_ballistic_zm", true );
-	include_weapon( "knife_ballistic_upgraded_zm", false );
-	include_weapon( "knife_ballistic_bowie_zm", false );
-	include_weapon( "knife_ballistic_bowie_upgraded_zm", false );
 }
 
 //------------------------------------------------------------------------------
@@ -928,7 +800,8 @@ monkey_start_monitor()
 		players = GetLocalPlayers();
 		for( i = 0; i < players.size; i++ )
 		{
-			players[i] clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_monkey, level._visionset_priority_map_monkey );
+			clientscripts\apex\_utility::visionset_activate(i, "cosmodrome_monkey");
+			// players[i] clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_monkey, level._visionset_priority_map_monkey );
 			players[i] fog_apply( "monkey",level._fog_settings_monkey_priority );
 		}
 
@@ -971,7 +844,8 @@ monkey_stop_monitor()
 		players = GetLocalPlayers();
 		for( i = 0; i < players.size; i++ )
 		{
-			players[i] clientscripts\_zombiemode::zombie_vision_set_remove( level._visionset_map_monkey );
+			clientscripts\apex\_utility::visionset_deactivate(i, "cosmodrome_monkey");
+			// players[i] clientscripts\_zombiemode::zombie_vision_set_remove( level._visionset_map_monkey );
 			players[i] fog_remove( "monkey" );
 		}
 
@@ -989,7 +863,8 @@ monkey_land_on()
 		players = GetLocalPlayers();
 		for( i = 0; i < players.size; i++ )
 		{
-			players[i] clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_monkeylandon, level._visionset_priority_map_monkeylandon, level._visionset_monkey_transition_time_on );
+			clientscripts\apex\_utility::visionset_activate(i, "cosmodrome_monkeylandon");
+			// players[i] clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_monkeylandon, level._visionset_priority_map_monkeylandon, level._visionset_monkey_transition_time_on );
 		}
 
 		wait( 0.05 );
@@ -1005,7 +880,8 @@ monkey_land_off()
 		players = GetLocalPlayers();
 		for( i = 0; i < players.size; i++ )
 		{
-			players[i] clientscripts\_zombiemode::zombie_vision_set_remove( level._visionset_map_monkeylandon, level._visionset_monkey_transition_time_off );
+			clientscripts\apex\_utility::visionset_deactivate(i, "cosmodrome_monkeylandon");
+			// players[i] clientscripts\_zombiemode::zombie_vision_set_remove( level._visionset_map_monkeylandon, level._visionset_monkey_transition_time_off );
 		}
 
 		wait( 0.05 );
@@ -1069,12 +945,15 @@ cosmodrome_first_vision_set( int_client_num )
 {
 	self endon( "disconnect" );
 
-	self clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_begin, level._visionset_priority_map_begin, 0.1, int_client_num );
-	self clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_nopower, level._visionset_priority_map_nopower, 0.1, int_client_num );
+	clientscripts\apex\_utility::visionset_activate(int_client_num, "cosmodrome_begin");
+	clientscripts\apex\_utility::visionset_activate(int_client_num, "cosmodrome_nopower");
+	// self clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_begin, level._visionset_priority_map_begin, 0.1, int_client_num );
+	// self clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_nopower, level._visionset_priority_map_nopower, 0.1, int_client_num );
 
 	level waittill( "ZID" ); // notify client -- "Zombie Introscreen Done"
 
-	self clientscripts\_zombiemode::zombie_vision_set_remove( level._visionset_map_begin, 8.5, int_client_num );
+	// self clientscripts\_zombiemode::zombie_vision_set_remove( level._visionset_map_begin, 8.5, int_client_num );
+	clientscripts\apex\_utility::visionset_deactivate(int_client_num, "cosmodrome_begin");
 }
 
 cosmodrome_vision_set( int_client_num )
@@ -1084,11 +963,13 @@ cosmodrome_vision_set( int_client_num )
 	// self thread clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_nopower, level._visionset_priority_map_nopower, level._visionset_zombie_transition_time, int_client_num );
 	if( level._power_on == true ) // if the power is on then use the power on visionset
 	{
-		self thread clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_poweron, level._visionset_priority_map_poweron, level._visionset_zombie_transition_time, int_client_num );
+		clientscripts\apex\_utility::visionset_activate(int_client_num, "cosmodrome_poweron");
+		// self thread clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_poweron, level._visionset_priority_map_poweron, level._visionset_zombie_transition_time, int_client_num );
 	}
 	else  // vision set for beginning (no power)
 	{
-		self thread clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_nopower, level._visionset_priority_map_nopower, 0, int_client_num );
+		clientscripts\apex\_utility::visionset_activate(int_client_num, "cosmodrome_nopower");
+		// self thread clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_nopower, level._visionset_priority_map_nopower, 0, int_client_num );
 	}
 }
 
@@ -1100,7 +981,8 @@ cosmodrome_power_vision_set_swap()
 	players = GetLocalPlayers();
 	for( i = 0; i < players.size; i++ )
 	{
-		players[i] clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_sudden_power, level._visionset_priority_map_sudden_power, level._visionset_zombie_sudden_power_transition_time, i );
+		clientscripts\apex\_utility::visionset_activate(i, "cosmodrome_sudden_power");
+		// players[i] clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_sudden_power, level._visionset_priority_map_sudden_power, level._visionset_zombie_sudden_power_transition_time, i );
 	}
 
 	wait( 1.0 );
@@ -1108,7 +990,8 @@ cosmodrome_power_vision_set_swap()
 	players = GetLocalPlayers();
 	for( i = 0; i < players.size; i++ )
 	{
-		players[i] clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_poweron, level._visionset_priority_map_poweron, level._visionset_zombie_transition_time, i );
+		clientscripts\apex\_utility::visionset_activate(i, "cosmodrome_poweron");
+		// players[i] clientscripts\_zombiemode::zombie_vision_set_apply( level._visionset_map_poweron, level._visionset_priority_map_poweron, level._visionset_zombie_transition_time, i );
 	}
 }
 
@@ -2636,4 +2519,78 @@ player_lander_fog( local_client_num, set, newEnt )
 		player thread fog_remove("lander");
 	}
 
+}
+
+//============================================================================================
+// T7 Mod Setup
+//============================================================================================
+setup_t7_mod()
+{
+	level._custom_visionset_registration = ::custom_visionset_registration;
+	level._zm_perk_includes = ::cosmodrome_include_perks;
+	level._zm_powerup_includes = ::cosmodrome_include_powerups;
+}
+
+//============================================================================================
+// T7 Mod Setup - VisionSets
+//============================================================================================
+custom_visionset_registration()
+{
+	// 													identifier						vision							priority	trans_in	trans_out	always_on
+	clientscripts\apex\_utility::visionset_register_info("cosmodrome_vision",			"zombie_cosmodrome",			0,			0,			0,			true);
+	clientscripts\apex\_utility::visionset_register_info("cosmodrome_nopower",			"zombie_cosmodrome_nopower",	1,			0,			0,			false);
+	clientscripts\apex\_utility::visionset_register_info("cosmodrome_sudden_power",		"zombie_cosmodrome_powerUP",	2,			.1,			0,			false);
+	clientscripts\apex\_utility::visionset_register_info("cosmodrome_poweron",			"zombie_cosmodrome_powerON",	3,			2.5,		0,			false);
+	clientscripts\apex\_utility::visionset_register_info("cosmodrome_monkey",			"zombie_cosmodrome_monkey",		4,			0,			0,			false);
+	clientscripts\apex\_utility::visionset_register_info("cosmodrome_begin",			"zombie_cosmodrome_begin",		5,			0,			0,			false);
+	clientscripts\apex\_utility::visionset_register_info("cosmodrome_monkeylandon",		"flare",						6,			.5,			3,			false);
+	// 													identifier						vision							priority	trans_in	trans_out	always_on
+}
+
+//============================================================================================
+// T7 Mod Setup - Powerups
+//============================================================================================
+cosmodrome_include_powerups()
+{
+	// T4
+	clientscripts\apex\powerups\_zm_powerup_full_ammo::include_powerup_for_level();
+	clientscripts\apex\powerups\_zm_powerup_insta_kill::include_powerup_for_level();
+	clientscripts\apex\powerups\_zm_powerup_double_points::include_powerup_for_level();
+	clientscripts\apex\powerups\_zm_powerup_carpenter::include_powerup_for_level();
+	clientscripts\apex\powerups\_zm_powerup_nuke::include_powerup_for_level();
+
+	// T5
+	clientscripts\apex\powerups\_zm_powerup_fire_sale::include_powerup_for_level();
+	clientscripts\apex\powerups\_zm_powerup_minigun::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_bonfire_sale::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_tesla::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_bonus_points::include_powerup_for_level();
+	clientscripts\apex\powerups\_zm_powerup_free_perk::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_random_weapon::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_empty_clip::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_lose_perk::include_powerup_for_level();
+	// clientscripts\apex\powerups\_zm_powerup_lose_points::include_powerup_for_level();
+}
+
+//============================================================================================
+// T7 Mod Setup - Perks
+//============================================================================================
+cosmodrome_include_perks()
+{
+	clientscripts\apex\perks\_zm_perk_juggernog::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_double_tap::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_sleight_of_hand::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_quick_revive::include_perk_for_level();
+
+	clientscripts\apex\perks\_zm_perk_divetonuke::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_marathon::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_deadshot::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_additionalprimaryweapon::include_perk_for_level();
+
+	clientscripts\apex\perks\_zm_perk_tombstone::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_chugabud::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_electric_cherry::include_perk_for_level();
+	clientscripts\apex\perks\_zm_perk_vulture_aid::include_perk_for_level();
+
+	clientscripts\apex\perks\_zm_perk_widows_wine::include_perk_for_level();
 }
