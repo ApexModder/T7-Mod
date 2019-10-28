@@ -74,6 +74,10 @@ xanim,o_zombie_magic_box_teddy_rise
 xanim,o_zombie_magic_box_weapon_dual_rise
 xanim,o_zombie_magic_box_weapon_rise
 
+// Black Ops 3 magicbox assets
+// xmodel,p7_zm_der_magic_box
+// xmodel,p7_zm_der_magic_box_fake
+
 //============================================================================================
 // Pack-A-Punch
 //============================================================================================
@@ -219,6 +223,15 @@ rawfile,maps\apex\powerups\_zm_powerup_lose_perk.gsc
 xmodel,p7_zm_power_up_perk_bottle
 
 //============================================================================================
+// Der Wonderfizz
+//============================================================================================
+// rawfile,clientscripts\apex\_zm_perk_random.csc
+// rawfile,maps\apex\_zm_perk_random.gsc
+// xmodel,p7_zm_vending_wonder
+// xmodel,p7_zm_vending_wonder_ball
+material,mtl_zombie_perk_bottle_bear
+
+//============================================================================================
 // New Perk System
 //============================================================================================
 rawfile,clientscripts\apex\_zm_perks.csc
@@ -355,27 +368,29 @@ xmodel,p6_zm_vending_vultureaid
 xmodel,p6_zm_vending_vultureaid_on
 xmodel,p6_zm_perk_vulture_ammo
 xmodel,p6_zm_perk_vulture_points
-// fx,sanchez\vulture_aid\vulture_smell_idle
-// fx,sanchez\vulture_aid\vulture_smell_trail
-// fx,sanchez\vulture_aid\vulture_powerup_on
+// fx,sanchez\vulture_aid\fx_zm_vulture_perk_stink
+// fx,sanchez\vulture_aid\fx_zm_vulture_perk_stink_trail
+// fx,sanchez\vulture_aid\fx_zombie_powerup_vulture
 // fx,misc\fx_zombie_powerup_grab
-// fx,sanchez\vulture_aid\vulture_wallgun_glow
-// fx,sanchez\vulture_aid\vulture_dtap_glow
-// fx,sanchez\vulture_aid\vulture_jugg_glow
-// fx,sanchez\vulture_aid\vulture_revive_glow
-// fx,sanchez\vulture_aid\vulture_speed_glow
-// fx,sanchez\vulture_aid\vulture_stamin_glow
-// fx,sanchez\vulture_aid\vulture_mule_glow
-// fx,sanchez\vulture_aid\vulture_pap_glow
-// fx,sanchez\vulture_aid\vulture_aid_glow
-// fx,sanchez\vulture_aid\vulture_cherry_glow
-// fx,sanchez\vulture_aid\vulture_fizz_glow
-// fx,sanchez\vulture_aid\vulture_phd_glow
-// fx,sanchez\vulture_aid\vulture_whoswho_glow
-// fx,sanchez\vulture_aid\vulture_widows_glow
-// fx,sanchez\vulture_aid\vulture_box_glow
-// fx,sanchez\vulture_aid\vulture_powerup_glow
-// fx,misc\fx_zombie_eye_vulture
+// fx,sanchez\vulture_aid\fx_zm_vulture_wallbuy_rifle
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_dbltap
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_jugg
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_revive
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_speed
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_marathon
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_mule
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_pap
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_vulture
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_cherry
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_fizz
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_phd
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_chugabud
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_widows
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_mystery_box
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_powerup
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_powerup_solo
+// fx,sanchez\vulture_aid\fx_zm_vulture_glow_deadshot
+// fx,sanchez\vulture_aid\fx_zombie_eye_vulture
 
 // Widows Wine
 rawfile,clientscripts\apex\perks\_zm_perk_widows_wine.csc
@@ -389,9 +404,6 @@ xmodel,p7_zm_vending_widows_wine
 xmodel,p7_zm_vending_widows_wine_on
 // fx,sanchez\widows_wine\fx_widows_wine_zombie
 // fx,sanchez\widows_wine\fx_widows_wine_explode
-
-// Der Wonderfizz
-material,mtl_zombie_perk_bottle_bear
 
 //============================================================================================
 // Overriden Zommon Assets
