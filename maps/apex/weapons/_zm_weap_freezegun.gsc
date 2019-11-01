@@ -80,22 +80,9 @@ freezegun_zombie_damage_callback(mod, hit_location, hit_origin, player, amount)
 	}
 
 	// no points awarded for damage or deaths dealt by the shatter result
-	if ( !self is_freezegun_shatter_damage( mod ) )
-	{
-		if( maps\_zombiemode_spawner::player_using_hi_score_weapon( player ) )
-		{
-			damage_type = "damage";
-		}
-		else
-		{
-			damage_type = "damage_light";
-		}
-
-		if ( !is_true( self.no_damage_points ) )
-		{
-			player maps\_zombiemode_score::player_add_points( damage_type, mod, hit_location, self.isdog );
-		}
-	}
+	// Fix #4 - no score when damaging ai
+	if( !self is_freezegun_shatter_damage( mod ) )
+		return true;
 	return false;
 }
 

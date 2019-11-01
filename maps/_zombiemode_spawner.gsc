@@ -3540,6 +3540,23 @@ zombie_damage( mod, hit_location, hit_origin, player, amount )
 			player maps\_zombiemode_score::player_add_points( "damage", mod, hit_location, self.isdog );
 		}
 	}
+	else
+	{
+		// Fix #4 - no score when damaging ai
+		if( maps\_zombiemode_spawner::player_using_hi_score_weapon( player ) )
+		{
+			damage_type = "damage";
+		}
+		else
+		{
+			damage_type = "damage_light";
+		}
+
+		if ( !is_true( self.no_damage_points ) )
+		{
+			player maps\_zombiemode_score::player_add_points( damage_type, mod, hit_location, self.isdog );
+		}
+	}
 
 	if ( IsDefined( self.zombie_damage_fx_func ) )
 	{
@@ -3637,6 +3654,23 @@ zombie_damage_ads( mod, hit_location, hit_origin, player, amount )
 		if( self zombie_give_flame_damage_points() )
 		{
 			player maps\_zombiemode_score::player_add_points( "damage_ads", mod, hit_location );
+		}
+	}
+	else
+	{
+		// Fix #4 - no score when damaging ai
+		if( maps\_zombiemode_spawner::player_using_hi_score_weapon( player ) )
+		{
+			damage_type = "damage";
+		}
+		else
+		{
+			damage_type = "damage_light";
+		}
+
+		if ( !is_true( self.no_damage_points ) )
+		{
+			player maps\_zombiemode_score::player_add_points( damage_type, mod, hit_location, self.isdog );
 		}
 	}
 
