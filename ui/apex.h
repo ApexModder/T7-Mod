@@ -7,6 +7,8 @@
 #define ELEM_BASE_VISARG 1
 #define ELEM_BASE_EXTRAARGS ;
 
+#define IS_FULLSCREEN DvarBool("r_fullscreen")
+
 // Text
 #define DT_ITEM_TYPE ITEM_TYPE_TEXT
 #define DT_TEXTSCALE TEXTSIZE_LARGE

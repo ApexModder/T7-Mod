@@ -15,7 +15,7 @@
 	menuDef
 	{
 		name				hud_test
-		rect				0 0 SCREEN_WIDTH SCREEN_HEIGHT HORIZONTAL_ALIGN_DEFAULT VERTICAL_ALIGN_DEFAULT
+		rect				0 0 SCREEN_WIDTH SCREEN_HEIGHT HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_TOP
 		fullscreen			0
 		visible				when(!DvarBool(#"ammoCounterHide") && !DvarBool(#"hud_missionFailed") && !ui_active() && DvarBool(#"zombiemode") && !DvarBool(#"zombietron") && !DvarBool(#"splitscreen"))
 
@@ -34,7 +34,7 @@
 			#define BETA_TEXT_FONT_SIZE TEXTSIZE_LARGE
 			#define BETA_TEXT_WIDTH (GetTextWidth(LocString(BETA_TEXT), BETA_TEXT_FONT, BETA_TEXT_FONT_SIZE))
 			#define BETA_TEXT_HEIGHT 100
-			#define BETA_TEXT_X ((SCREEN_WIDTH / 2) - (BETA_TEXT_WIDTH / 2))
+			#define BETA_TEXT_X (SCREEN_WIDTH / 2)
 			#define BETA_TEXT_Y (SCREEN_HEIGHT - 25)
 			#define BETA_TEXT_COLOR 1 1 1 .25
 

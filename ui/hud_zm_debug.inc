@@ -7,7 +7,7 @@
 	#define DT_TEXTFONT UI_FONT_BOLD
 
 	// Defing some debug vars
-	#define DBG_X (-100 + DvarFloat("ui_dbg_x"))
+	#define DBG_X DvarFloat("ui_dbg_x")
 	#define DBG_Y (50 + DvarFloat("ui_dbg_y"))
 	#define DBG_SPACING_Y (DT_HEIGHT + 2)
 
@@ -25,6 +25,13 @@
 		DBG_X,
 		DBG_Y + DBG_SPACING_Y,
 		"@MOD_DBG_ANGLES"
+	)
+
+	// Fullscreen
+	DRAW_TEXT(
+		DBG_X,
+		DBG_Y + DBG_SPACING_Y + DBG_SPACING_Y,
+		"@MENU_FULLSCREEN_CAPS"
 	)
 
 	// Below here renders unlocalized text
@@ -47,6 +54,21 @@
 		DBG_X + DT_GET_TEXTWIDTH("@MOD_DBG_ANGLES") + 2,
 		DBG_Y + DBG_SPACING_Y,
 		DvarString("ui_dbg_player_angles")
+	)
+
+	// Fullscreen - Boolean
+	DRAW_TEXT_VIS(
+		DBG_X + DT_GET_TEXTWIDTH("@MENU_FULLSCREEN_CAPS") + 2,
+		DBG_Y + DBG_SPACING_Y + DBG_SPACING_Y,
+		"TRUE",
+		IS_FULLSCREEN
+	)
+
+	DRAW_TEXT_VIS(
+		DBG_X + DT_GET_TEXTWIDTH("@MENU_FULLSCREEN_CAPS") + 2,
+		DBG_Y + DBG_SPACING_Y + DBG_SPACING_Y,
+		"FALSE",
+		!IS_FULLSCREEN
 	)
 
 	// Below here renders localized text again

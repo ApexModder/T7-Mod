@@ -2,7 +2,7 @@
 #define PERK_ICON_IMAGE(perk) (DvarString("ui_zm_perk_" + perk + "_image"))
 #define PERK_ICON_ALPHA(perk) (DvarFloat("ui_zm_perk_" + perk + "_alpha"))
 
-#define PERK_X_START -107
+#define PERK_X_START 0
 #define PERK_Y 386
 #define PERK_IMAGE_SIZE 24
 
