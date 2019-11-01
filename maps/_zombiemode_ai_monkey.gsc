@@ -2650,7 +2650,8 @@ monkey_remove_from_pack()
 			forward = VectorNormalize( AnglesToForward( self.angles ) );
 			end_pos = self.origin - vector_scale( forward, 32 );
 
-			level thread maps\apex\_zm_powerups::specific_powerup_drop( "free_perk", end_pos );
+			// Fix Issue: #5 - Power up dropping to low
+			level thread maps\apex\_zm_powerups::specific_powerup_drop( "free_perk", end_pos + (0, 0, 40) );
 		}
 
 		drop_pos = self.origin;
@@ -2660,7 +2661,8 @@ monkey_remove_from_pack()
 			drop_pos = self.attack.origin;
 		}
 
-		level thread maps\apex\_zm_powerups::specific_powerup_drop( "full_ammo", drop_pos );
+		// Fix Issue: #5 - Power up dropping to low
+		level thread maps\apex\_zm_powerups::specific_powerup_drop( "full_ammo", drop_pos + (0, 0, 40) );
 	}
 }
 
