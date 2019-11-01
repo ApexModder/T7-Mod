@@ -7,7 +7,7 @@ include_perk_for_level()
 {
 	maps\apex\_zm_perks::register_perk("chugabud", "minimap_icon_chugabud");
 	maps\apex\_zm_perks::register_perk_bottle("chugabud", undefined, undefined, 30);
-	maps\apex\_zm_perks::register_perk_machine("chugabud", false, &"ZOMBIE_PERK_CHUGABUD", 3000, "p6_zm_vending_chugabud", "p6_zm_vending_chugabud_on", "perk_light_green");
+	maps\apex\_zm_perks::register_perk_machine("chugabud", false, &"ZOMBIE_PERK_CHUGABUD", 2000, "p6_zm_vending_chugabud", "p6_zm_vending_chugabud_on", "perk_light_green");
 	maps\apex\_zm_perks::register_perk_threads("chugabud", ::give_chugabud, ::take_chugabud);
 	maps\apex\_zm_perks::register_perk_sounds("chugabud", "mus_perks_whoswho_sting", "mus_perks_whoswho_jingle", undefined);
 

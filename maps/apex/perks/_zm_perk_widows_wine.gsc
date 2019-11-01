@@ -7,7 +7,7 @@ include_perk_for_level()
 {
 	maps\apex\_zm_perks::register_perk("widows", "specialty_widows_wine_zombies");
 	maps\apex\_zm_perks::register_perk_bottle("widows", undefined, undefined, 34);
-	maps\apex\_zm_perks::register_perk_machine("widows", false, &"ZOMBIE_PERK_WIDOWSWINE", 2000, "p7_zm_vending_widows_wine", "p7_zm_vending_widows_wine_on", "perk_light_red");
+	maps\apex\_zm_perks::register_perk_machine("widows", false, &"ZOMBIE_PERK_WIDOWSWINE", 4000, "p7_zm_vending_widows_wine", "p7_zm_vending_widows_wine_on", "perk_light_red");
 	maps\apex\_zm_perks::register_perk_threads("widows", ::give_widows, ::take_widows);
 	maps\apex\_zm_perks::register_perk_sounds("widows", "mus_perks_widows_sting", "mus_perks_widows_jingle", undefined);
 

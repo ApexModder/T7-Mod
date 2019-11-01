@@ -7,7 +7,7 @@ include_perk_for_level()
 {
 	maps\apex\_zm_perks::register_perk("tombstone", "specialty_tombstone_zombies");
 	maps\apex\_zm_perks::register_perk_bottle("tombstone", undefined, undefined, 29);
-	maps\apex\_zm_perks::register_perk_machine("tombstone", false, &"ZOMBIE_PERK_TOMBSTONE", 3000, "zombie_vending_tombstone", "zombie_vending_tombstone_on", "perk_light_green");
+	maps\apex\_zm_perks::register_perk_machine("tombstone", false, &"ZOMBIE_PERK_TOMBSTONE", 2000, "zombie_vending_tombstone", "zombie_vending_tombstone_on", "perk_light_green");
 	maps\apex\_zm_perks::register_perk_threads("tombstone", ::give_tombstone, ::take_tombstone);
 	maps\apex\_zm_perks::register_perk_sounds("tombstone", "mus_perks_tombstone_sting", "mus_perks_tombstone_jingle", undefined);
 
