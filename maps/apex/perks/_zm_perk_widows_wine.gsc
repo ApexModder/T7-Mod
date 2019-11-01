@@ -188,7 +188,8 @@ widows_wine_zombie_death_watch(attacker)
 			{
 				self.no_powerups = true;
 				level._powerup_timeout_override = ::powerup_widows_wine_timeout;
-				maps\apex\_zm_powerups::specific_powerup_drop("ww_grenade", self.origin, self.attacker);
+				// Fix Issue: #3 - Power up dropping to low
+				maps\apex\_zm_powerups::specific_powerup_drop("ww_grenade", self.origin + (0, 0, 40), self.attacker);
 				level._powerup_timeout_override = undefined;
 			}
 		}

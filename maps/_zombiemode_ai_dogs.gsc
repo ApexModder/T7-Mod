@@ -253,7 +253,8 @@ dog_round_aftermath()
 
 	if( IsDefined( power_up_origin ) )
 	{
-		maps\apex\_zm_powerups::specific_powerup_drop( "full_ammo", power_up_origin );
+		// Fix Issue: #3 - Power up dropping to low
+		maps\apex\_zm_powerups::specific_powerup_drop( "full_ammo", power_up_origin + (0, 0, 40) );
 	}
 
 	wait(2);

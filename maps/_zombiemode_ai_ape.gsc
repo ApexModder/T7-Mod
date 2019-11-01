@@ -1690,7 +1690,8 @@ ape_zombie_powerup_drop()
 
 	level.zombie_vars["zombie_drop_item"] = 1;
 	level.powerup_drop_count--;
-	level thread maps\apex\_zm_powerups::powerup_drop( self.origin );
+	// Fix Issue: #3 - Power up dropping to low
+	level thread maps\apex\_zm_powerups::powerup_drop( self.origin + (0, 0, 40) );
 }
 
 ape_adjust_max_ammo()

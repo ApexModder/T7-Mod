@@ -812,18 +812,21 @@ thief_zombie_die()
 		if ( self.bonfire )
 		{
 			// drop bonfire sale
-			level thread maps\apex\_zm_powerups::specific_powerup_drop( "bonfire_sale", self.origin );
+			// Fix Issue: #3 - Power up dropping to low
+			level thread maps\apex\_zm_powerups::specific_powerup_drop( "bonfire_sale", self.origin + (0, 0, 40) );
 		}
 	}
 	else
 	{
-		level thread maps\apex\_zm_powerups::specific_powerup_drop( "fire_sale", self.origin );
+		// Fix Issue: #3 - Power up dropping to low
+		level thread maps\apex\_zm_powerups::specific_powerup_drop( "fire_sale", self.origin + (0, 0, 40) );
 	}
 
 	forward = VectorNormalize( AnglesToForward( self.angles ) );
 	endPos = self.origin - vector_scale( forward, 32 );
 
-	level thread maps\apex\_zm_powerups::specific_powerup_drop( "full_ammo", endPos );
+	// Fix Issue: #3 - Power up dropping to low
+	level thread maps\apex\_zm_powerups::specific_powerup_drop( "full_ammo", endPos + (0, 0, 40) );
 
     self thread maps\_zombiemode_audio::do_zombies_playvocals( "death", self.animname );
 

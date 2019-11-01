@@ -803,17 +803,20 @@ director_watch_damage()
 
 	if ( isdefined( level.director_should_drop_special_powerup ) && [[level.director_should_drop_special_powerup]]() )
 	{
-		level thread maps\apex\_zm_powerups::specific_powerup_drop( "tesla", self.origin );
+		// Fix Issue: #3 - Power up dropping to low
+		level thread maps\apex\_zm_powerups::specific_powerup_drop( "tesla", self.origin + (0, 0, 40) );
 	}
 	else
 	{
-		level thread maps\apex\_zm_powerups::specific_powerup_drop( "minigun", self.origin );
+		// Fix Issue: #3 - Power up dropping to low
+		level thread maps\apex\_zm_powerups::specific_powerup_drop( "minigun", self.origin + (0, 0, 40) );
 	}
 
 	forward = VectorNormalize( AnglesToForward( self.angles ) );
 	end_pos = self.origin - vector_scale( forward, 32 );
 
-	level thread maps\apex\_zm_powerups::specific_powerup_drop( "free_perk", end_pos );
+	// Fix Issue: #3 - Power up dropping to low
+	level thread maps\apex\_zm_powerups::specific_powerup_drop( "free_perk", end_pos + (0, 0, 40) );
 
 	level notify( "quiet_on_the_set_achieved" );
 
@@ -2462,7 +2465,8 @@ zombie_drop_max_ammo()
 	{
 		level.director_max_ammo_available = false;
 		level.director_max_ammo_chance = level.director_max_ammo_chance_default;
-		level thread maps\apex\_zm_powerups::specific_powerup_drop( "full_ammo", self.origin );
+		// Fix Issue: #3 - Power up dropping to low
+		level thread maps\apex\_zm_powerups::specific_powerup_drop( "full_ammo", self.origin + (0, 0, 40) );
 		level notify( "director_max_ammo_drop" );
 	}
 	else
