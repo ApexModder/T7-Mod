@@ -207,6 +207,8 @@ chugabud_give_loadout(corpse)
 			continue;
 		if(loadout.perks[i] == "revive" && is_solo_game())
 			level.solo_game_free_player_quickrevive = true;
+		if(loadout.perks[i] == "chugabud")
+			continue;
 
 		self maps\apex\_zm_perks::give_perk(loadout.perks[i], false);
 	}
